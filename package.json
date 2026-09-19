@@ -4,6 +4,8 @@
   "private": true,
   "description": "Local-first structured instability workbench for AI SLOP",
   "scripts": {
-    "serve": "python -m http.server 8000"
+    "serve": "python -m http.server 8000",
+    "test": "node scripts/smoke.mjs",
+    "sync:canon": "node scripts/sync-canon.mjs"
   }
 }
