@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="theme-color" content="#08080e"/>
+  <title>DAVID LAB</title>
+  <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+  <header class="mast">
+    <div>
+      <div class="kicker">AI SLOP / STRUCTURED INSTABILITY WORKBENCH</div>
+      <h1>DAVID <i>LAB</i><span>0.2</span></h1>
+      <p>Pressure with nowhere boring to go.</p>
+    </div>
+    <div class="mast-actions">
+      <button class="ghost" data-nav="build">NEW EXPERIMENT</button>
+      <button class="hot" id="quickExport">EXPORT LAB</button>
+    </div>
+  </header>
+
+  <nav id="nav">
+    <button data-nav="build" class="active">BUILD</button>
+    <button data-nav="runs">RUNS <b id="runCount">0</b></button>
+    <button data-nav="zoo">FAULT ZOO <b id="zooCount">0</b></button>
+    <button data-nav="scars">SCARS</button>
+    <button data-nav="breed">BREED</button>
+    <button data-nav="data">DATA</button>
+  </nav>
+
+  <main>
+    <section class="view active" id="view-build">
+      <div class="build-grid">
+        <article class="card">
+          <div class="step">01</div><h2>DEFINE THE BIND</h2>
+          <div class="two">
+            <label>Medium<select id="media">
+              <option>image</option><option>video</option><option>audio</option>
+              <option>text</option><option>controller</option><option>mixed</option>
+            </select></label>
+            <label>Epistemic status<select id="status">
+              <option>HYPOTHESIS</option><option>PROCEDURAL</option><option>SUPPORTED</option>
+              <option>SPECULATIVE</option><option>OBSERVED</option><option>METAPHOR</option>
+            </select></label>
+          </div>
+          <label>Model / tool<input id="model" placeholder="Suno, Grok, FLUX, local LLM…"/></label>
+          <label>Anchor / invariant<textarea id="anchor" placeholder="What must survive the abuse?"></textarea></label>
+          <label>Assumption attacked<textarea id="assumption" placeholder="What normal rule are we refusing?"></textarea></label>
+          <label>Competing pressure A<textarea id="condA" placeholder="Mandate A"></textarea></label>
+          <label>Competing pressure B<textarea id="condB" placeholder="Mandate B"></textarea></label>
+        </article>
+
+        <article class="card operator-card">
+          <div class="step">02</div><h2>SELECT OPERATORS</h2>
+          <input id="operatorSearch" class="search" placeholder="search the operator organism…"/>
+          <div id="operators" class="operator-list"></div>
+          <div class="selected-bar">SELECTED: <span id="selectedOps">none</span></div>
+        </article>
+
+        <article class="card">
+          <div class="step">03</div><h2>PRESSURE</h2>
+          <label class="range-label">Dose <output id="doseOut">0.50</output>
+            <input id="dose" type="range" min="0" max="1" value=".50" step=".01"/>
+          </label>
+          <label class="range-label">Sweep width <output id="widthOut">0.20</output>
+            <input id="width" type="range" min=".04" max=".80" value=".20" step=".02"/>
+          </label>
+          <label>Independent variable<input id="independent" value="dose_or_strength"/></label>
+          <label>Procedure<textarea id="procedure" placeholder="What do we actually do? Keep it operational."></textarea></label>
+          <label>Expected artifact family<textarea id="expected" placeholder="What family of failure would be interesting?"></textarea></label>
+          <label>Condition-dropout risk<textarea id="dropout" placeholder="How can the system cheaply escape the bind?"></textarea></label>
+          <button id="sweepBtn">GENERATE BOUNDARY SWEEP</button>
+          <div id="sweep" class="sweep"></div>
+        </article>
+
+        <article class="card">
+          <div class="step">04</div><h2>RUN + OBSERVE</h2>
+          <div class="button-row">
+            <button id="packetBtn">COMPILE RUN PACKET</button>
+            <button id="copyPacket" class="ghost">COPY PACKET</button>
+          </div>
+          <pre id="packet" class="packet">Build a packet to see the execution contract.</pre>
+          <label>Observed result<textarea id="observed" placeholder="Paste/describe exactly what happened. UNRUN is fine if you're saving the recipe first."></textarea></label>
+          <div class="two">
+            <label>Creative utility (0–10)<input id="creative" type="number" min="0" max="10" step=".5"/></label>
+            <label>Mechanism confidence (0–10)<input id="confidence" type="number" min="0" max="10" step=".5"/></label>
+          </div>
+          <label>Route / history effect<textarea id="routeEffect" placeholder="What changed because this route happened?"></textarea></label>
+          <label>Next test<textarea id="nextTest" placeholder="What should we vary next?"></textarea></label>
+          <div class="button-row sticky-actions">
+            <button class="hot" id="saveRun">SAVE RUN</button>
+            <button class="ghost" id="clearBuild">CLEAR</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" id="view-runs">
+      <div class="section-head"><div><h2>RUN LEDGER</h2><p>Recipes, results, doses, ancestry. No cherry-picked disappearing acts.</p></div></div>
+      <div id="runs"></div>
+    </section>
+
+    <section class="view" id="view-zoo">
+      <div class="section-head"><div><h2>FAULT ZOO</h2><p>Promote accidents into specimens. Name the failure, not the vibe.</p></div></div>
+      <div class="zoo-compose card">
+        <label>Source run<select id="zooRun"></select></label>
+        <label>Failure family<input id="zooFamily" placeholder="binding_leak, repair_tissue, temporal_rebinding…"/></label>
+        <label>Specimen note<textarea id="zooNote" placeholder="What exactly deserves preservation?"></textarea></label>
+        <button id="addSpecimen">ARCHIVE SPECIMEN</button>
+      </div>
+      <div id="zoo"></div>
+    </section>
+
+    <section class="view" id="view-scars">
+      <div class="section-head"><div><h2>SCAR ENGINE</h2><p>Compare two routes. If the middle step mattered, something downstream should carry it.</p></div></div>
+      <div class="card">
+        <div class="two">
+          <label>Route A<select id="scarA"></select></label>
+          <label>Route B<select id="scarB"></select></label>
+        </div>
+        <button id="compareBtn">COMPARE ROUTES</button>
+        <div id="scarResult"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-breed">
+      <div class="section-head"><div><h2>BREEDING CHAMBER</h2><p>Breed experiment state, not prose. Children inherit pressures, operators, doses, and scars.</p></div></div>
+      <div class="card">
+        <div class="two">
+          <label>Parent A<select id="parentA"></select></label>
+          <label>Parent B<select id="parentB"></select></label>
+        </div>
+        <label>Breeding seed<input id="breedSeed" value="controlled-freak-001"/></label>
+        <button id="breedBtn">BREED CHILD</button>
+        <pre id="childPreview" class="packet">Choose two parents.</pre>
+        <button id="saveChild" class="hot" disabled>SAVE CHILD AS UNRUN EXPERIMENT</button>
+      </div>
+    </section>
+
+    <section class="view" id="view-data">
+      <div class="section-head"><div><h2>DATA / PORTABILITY</h2><p>The browser is not allowed to become a tiny proprietary crypt. Take your shit with you.</p></div></div>
+      <div class="data-grid">
+        <div class="card">
+          <h3>EXPORT</h3>
+          <p>Download all runs, specimens, and lab metadata as JSON.</p>
+          <button id="exportBtn">DOWNLOAD LAB JSON</button>
+        </div>
+        <div class="card">
+          <h3>IMPORT</h3>
+          <p>Merge a DAVID LAB export into this browser.</p>
+          <input id="importFile" type="file" accept=".json,application/json"/>
+        </div>
+        <div class="card danger">
+          <h3>NUKE LOCAL DATA</h3>
+          <p>This only clears DAVID LAB data in this browser.</p>
+          <button id="nukeBtn">CLEAR LOCAL LAB</button>
+        </div>
+        <div class="card">
+          <h3>CANON</h3>
+          <p>Operators are vendored from <code>merrypranxter/ai_slop</code>. That repo remains authoritative for definitions.</p>
+          <div id="registryMeta" class="mono"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <template id="runTemplate">
+    <article class="run-card">
+      <div class="run-top"><div><b class="run-id"></b><span class="run-media"></span></div><div class="run-score"></div></div>
+      <h3 class="run-title"></h3>
+      <div class="chips"></div>
+      <p class="run-result"></p>
+      <details><summary>FULL RECORD</summary><pre class="run-json"></pre></details>
+      <div class="button-row"><button class="ghost duplicate-run">DUPLICATE</button><button class="ghost delete-run">DELETE</button></div>
+    </article>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+</html>
