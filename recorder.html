@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAVID LAB // OBSERVATION RECORDER</title>
+<style>
+:root{color-scheme:dark;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#090813;color:#f0e9fb}
+*{box-sizing:border-box}body{margin:0 auto;padding:18px;max-width:1180px;background:radial-gradient(ellipse at top left,#33144288,transparent 58%),#090813;min-height:100vh}
+a{color:#7df6ef}header{border-bottom:2px solid #fd45b3;margin-bottom:20px;padding-bottom:16px}
+.kicker{letter-spacing:.17em;color:#9df6e3;font-size:.76rem}
+h1{font-size:clamp(1.5rem,5vw,2.5rem);margin:.3em 0;color:#ff65cf}
+h2{font-size:1.04rem;color:#8df7e5;margin-top:0}
+p,small{line-height:1.5;color:#c7bdd7}
+main{display:grid;grid-template-columns:minmax(290px,1fr) minmax(290px,1fr);gap:16px}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+.panel{border:1px solid #714c8a;background:#171326;border-radius:10px;padding:17px;min-width:0}
+.full{grid-column:1/-1}
+label{display:block;font-size:.84rem;margin:12px 0 4px;color:#dfb9f3}
+input,select,textarea,button{font:inherit}
+input,select,textarea{width:100%;background:#0b0a15;border:1px solid #65557a;border-radius:6px;color:white;padding:10px;min-height:39px}
+textarea{min-height:74px;resize:vertical}
+button{background:#f641ab;color:#110718;border:0;padding:10px 14px;font-weight:800;border-radius:6px;cursor:pointer;margin:9px 8px 0 0}
+button.secondary{background:#63eee1}
+button.ghost{background:#382343;color:white;border:1px solid #8c669d}
+button:focus-visible,a:focus-visible{outline:3px solid #faf47b}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:420px){.cols{grid-template-columns:1fr}}
+.note{font-size:.77rem}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0c0b15;border:1px solid #4b3a60;border-radius:6px;padding:12px;font-size:.81rem}
+table{width:100%;border-collapse:collapse;font-size:.76rem}
+th,td{border-bottom:1px solid #46374f;padding:8px 5px;text-align:left;vertical-align:top}
+th{color:#80ede2}
+.scroll{overflow-x:auto}
+.row{border-top:1px solid #594366;padding:12px 0}
+.row:first-child{border:0}
+.mini{font-size:.74rem;color:#d1c3dd;overflow-wrap:anywhere}
+.green{color:#8ef3b4}.yellow{color:#f5d37a}
+strong{color:#ffe0f1}
+.badge{font-weight:700;letter-spacing:.05em}
+#statusLine{min-height:1.3em}
+</style>
+</head>
+<body>
+<header>
+<div class="kicker">AI SLOP / DAVID LAB / CHIPU PROPOSAL 001</div>
+<h1>BEHAVIORAL OBSERVATION RECORDER</h1>
+<p>Save evidence before teaching a novelty detector what to call interesting. Local-first · zero model/API calls · no automatic fitness judgments.</p>
+<a href="./index.html">← Back to DAVID LAB</a>
+</header>
+<main>
+<section class="panel">
+<h2>01 // RECORD ONE TRIAL</h2>
+<p class="note">Use the same study, task, settings and seed to compare A, B, A+B and CHILD. Optional ABLATION removes one suspected critical rule. Record PLANNED and OBSERVED separately.</p>
+<form id="observationForm">
+<label for="study">Study ID</label><input id="study" required placeholder="face-topology-01">
+<div class="cols">
+<div><label for="condition">Condition</label><select id="condition"><option value="A">A alone</option><option value="B">B alone</option><option value="AB">A+B simple combination</option><option value="CHILD">Bred child</option><option value="ABLATION">Child with one rule removed</option></select></div>
+<div><label for="seed">Trial seed</label><input id="seed" required placeholder="1847"></div>
+</div>
+<label for="linkedRun">DAVID LAB run (optional)</label><select id="linkedRun"><option value="">— no run linked —</option></select>
+<label for="task">Exact task</label><textarea id="task" required placeholder="Same task for each condition"></textarea>
+<label for="settings">Model / configuration / relevant parameters</label><textarea id="settings" required placeholder="Model, version, generation settings, doses; keep matched"></textarea>
+<div class="cols">
+<div><label for="trialStatus">Execution status</label><select id="trialStatus"><option value="planned">PLANNED (not run)</option><option value="observed">OBSERVED (actual output)</option></select></div>
+<div><label for="observerType">Observer kind</label><select id="observerType"><option>human</option><option>AI model</option><option>script/tool</option></select></div>
+</div>
+<label for="observer">Observer name / tool</label><input id="observer" required placeholder="human observer / model + version">
+<label for="artifactRef">Output reference (path, hash, or ID)</label><input id="artifactRef" placeholder="artifacts/seed1847-child.png">
+<label for="artifactText">Or actual output excerpt</label><textarea id="artifactText" placeholder="Text-only or small excerpt, if no file reference exists"></textarea>
+<label for="change">What changed?</label><textarea id="change" placeholder="Describe changes, not judgments of novelty"></textarea>
+<label for="pattern">What structural pattern appeared?</label><textarea id="pattern" placeholder="e.g. the surface reconnects only around preserved landmarks"></textarea>
+<div class="cols">
+<div><label for="held">Which constraints held?</label><textarea id="held" placeholder="Anchor, identity, timing..."></textarea></div>
+<div><label for="broke">Which constraints broke?</label><textarea id="broke" placeholder="Binding, topology, temporal continuity..."></textarea></div>
+</div>
+<label for="notes">Observer notes / uncertainty</label><textarea id="notes" placeholder="Don't turn a guess into a causal claim"></textarea>
+<button type="submit">SAVE TRIAL</button>
+<button type="reset" class="ghost">CLEAR FORM</button>
+</form>
+<div id="statusLine" aria-live="polite"></div>
+</section>
+
+<section class="panel">
+<h2>02 // MATCHED CONDITIONS</h2>
+<p class="note">Only OBSERVED trials count toward a complete comparison. Matching requires identical study, task, settings and seed. An ablation is optional; different settings are separate groups.</p>
+<label for="studyFilter">View study</label><select id="studyFilter"><option value="">All studies</option></select>
+<div id="overview"></div>
+<div class="scroll"><table><thead><tr><th>Seed</th><th>A</th><th>B</th><th>A+B</th><th>Child</th><th>Abl.</th></tr></thead><tbody id="matrix"></tbody></table></div>
+<h2 style="margin-top:20px">03 // TRANSMISSION TO CHIPU</h2>
+<p class="note">This receipt is a compact text report, not a detector verdict. Empty trials are not misrepresented as evidence.</p>
+<pre id="receipt"></pre>
+<button id="copyReceipt" type="button" class="secondary">COPY TINY RECEIPT</button>
+</section>
+
+<section class="panel full">
+<h2>04 // OBSERVATION LEDGER</h2>
+<div class="cols">
+<div><button type="button" id="exportButton" class="secondary">EXPORT JSON</button></div>
+<div><label for="importFile">Import observation JSON</label><input id="importFile" type="file" accept="application/json,.json"></div>
+</div>
+<p class="note">Observations stay in this browser until exported. JSON includes the evidence, observer provenance and protocol version. Main DAVID LAB experiments are not modified.</p>
+<div id="ledger"></div>
+</section>
+</main>
+<script>
+(function(){
+"use strict";
+var KEY="david_lab_behavioral_observations_v1";
+var PROTOCOL="chippu-recorder-v1";
+var CONDITIONS=["A","B","AB","CHILD","ABLATION"];
+var observations=read();
+function el(id){return document.getElementById(id);}
+function string(x){return x==null?"":String(x);}
+function read(){try{var v=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(observations));render();return true;}catch(e){el("statusLine").textContent="Storage failed: export data or free browser space.";return false;}}
+function uuid(){return (typeof crypto!=="undefined"&&crypto.randomUUID)?crypto.randomUUID():"ob-"+Date.now()+"-"+Math.random().toString(36).slice(2);}
+function value(id){return el(id).value.trim();}
+function cell(text){var c=document.createElement("td");c.textContent=text;return c;}
+function note(parent,tag,content,klass){var n=document.createElement(tag);n.textContent=content;if(klass)n.className=klass;parent.appendChild(n);return n;}
+function knownRuns(){
+try{var r=JSON.parse(localStorage.getItem("david_lab_runs_v2")||"[]");return Array.isArray(r)?r:[];}catch(e){return [];}
+}
+function renderRunSelect(){
+var select=el("linkedRun"), old=select.value;
+select.replaceChildren(new Option("— no run linked —",""));
+knownRuns().forEach(function(r){
+if(r.run_id) select.add(new Option(r.run_id+" · "+string(r.media),r.run_id));
+});
+select.value=old||"";
+}
+function recordFromForm(){
+return {
+id:uuid(), protocol:PROTOCOL, recorded_at:new Date().toISOString(),
+study:value("study"), condition:value("condition"), seed:value("seed"),
+linked_run_id:value("linkedRun"), task:value("task"), settings:value("settings"),
+status:value("trialStatus"), observer_type:value("observerType"), observer:value("observer"),
+artifact_ref:value("artifactRef"), artifact_text:value("artifactText"),
+changed:value("change"), pattern:value("pattern"), held:value("held"),
+broke:value("broke"), notes:value("notes")
+};
+}
+function validRecord(r){
+if(!r.study||!r.seed||!r.task||!r.settings||!r.observer||!CONDITIONS.includes(r.condition)) return "Study, seed, task, settings, observer and condition are required.";
+if(r.status==="observed"&&!(r.artifact_ref||r.artifact_text)) return "OBSERVED requires an artifact reference or actual output text.";
+if(r.status==="observed"&&!(r.changed||r.pattern||r.held||r.broke)) return "OBSERVED requires at least one descriptive observation.";
+return "";
+}
+function filterRows(){
+var filter=el("studyFilter").value;
+return observations.filter(function(r){return !filter||r.study===filter;});
+}
+function keyOf(r){return JSON.stringify([r.study,r.seed,r.task,r.settings]);}
+function groupsOf(rows){
+var m=new Map();
+rows.forEach(function(r){
+var key=keyOf(r);
+if(!m.has(key))m.set(key,{study:r.study,seed:r.seed,rows:[]});
+m.get(key).rows.push(r);
+});
+return Array.from(m.values()).sort(function(a,b){return a.study.localeCompare(b.study)||a.seed.localeCompare(b.seed);});
+}
+function hasObserved(g,c){return g.rows.some(function(r){return r.condition===c&&r.status==="observed";});}
+function receiptFor(rows){
+var groups=groupsOf(rows), completed=groups.filter(function(g){return CONDITIONS.slice(0,4).every(function(c){return hasObserved(g,c);});});
+var observed=rows.filter(function(r){return r.status==="observed";});
+var study=el("studyFilter").value||"ALL";
+var lines=["DAVID LAB // CHIPU RECEIPT v1","Study: "+study,
+"Trials: "+rows.length+" recorded / "+observed.length+" observed",
+"Matched A/B/A+B/CHILD sets: "+completed.length,
+"Ablation outputs: "+observed.filter(function(r){return r.condition==="ABLATION";}).length];
+if(!observed.length) lines.push("No measured outputs yet. Recorder installed; evidence pending.");
+else{
+var list=observed.slice(-3).reverse();
+list.forEach(function(r){
+var summary=r.pattern||r.changed||r.held||r.broke;
+lines.push(r.condition+" seed "+r.seed+" ["+r.observer_type+"]: "+summary.slice(0,65));
+});
+}
+return lines.join("\n").slice(0,480);
+}
+function render(){
+var select=el("studyFilter"), selected=select.value, studyNames=Array.from(new Set(observations.map(function(r){return r.study;}))).sort();
+select.replaceChildren(new Option("All studies",""));
+studyNames.forEach(function(s){select.add(new Option(s,s));});
+select.value=studyNames.includes(selected)?selected:"";
+var rows=filterRows(), groups=groupsOf(rows), complete=groups.filter(function(g){return CONDITIONS.slice(0,4).every(function(c){return hasObserved(g,c);});});
+el("overview").textContent=rows.length+" trials · "+rows.filter(function(r){return r.status==="observed";}).length+" observed · "+complete.length+" complete matched sets";
+var body=el("matrix");body.replaceChildren();
+groups.forEach(function(g){
+var tr=document.createElement("tr");
+tr.appendChild(cell(g.study+" / "+g.seed));
+CONDITIONS.forEach(function(c){
+var all=g.rows.filter(function(r){return r.condition===c;});
+var n=all.filter(function(r){return r.status==="observed";}).length;
+tr.appendChild(cell(n?("✓ "+n):(all.length?"planned":"—")));
+});
+body.appendChild(tr);
+});
+if(!groups.length){var tr=document.createElement("tr"), td=cell("No trials recorded.");td.colSpan=6;tr.appendChild(td);body.appendChild(tr);}
+el("receipt").textContent=receiptFor(rows);
+var ledger=el("ledger");ledger.replaceChildren();
+rows.slice().reverse().forEach(function(r){
+var box=document.createElement("div");box.className="row";
+note(box,"strong",r.study+" · "+r.seed+" · "+r.condition+" · "+r.status,"badge");
+note(box,"div",r.observer_type+": "+r.observer+" · "+r.recorded_at,"mini");
+note(box,"div","Task: "+r.task+" | Settings: "+r.settings,"mini");
+note(box,"div","Artifact: "+(r.artifact_ref||r.artifact_text||"not recorded"),"mini");
+note(box,"div","Changed: "+(r.changed||"—")+" | Pattern: "+(r.pattern||"—"),"mini");
+note(box,"div","Held: "+(r.held||"—")+" | Broke: "+(r.broke||"—"),"mini");
+var button=note(box,"button","DELETE RECORD","ghost");button.type="button";button.addEventListener("click",function(){
+if(confirm("Delete this observation?")){observations=observations.filter(function(x){return x.id!==r.id;});save();}
+});
+ledger.appendChild(box);
+});
+if(!rows.length) note(ledger,"p","No observations yet. The recorder does not invent them.");
+}
+el("observationForm").addEventListener("submit",function(e){
+e.preventDefault();var record=recordFromForm(), err=validRecord(record);
+if(err){el("statusLine").textContent=err;return;}
+observations.push(record);
+if(save()){el("statusLine").textContent="Saved "+record.status+" trial "+record.condition+". No fitness score assigned.";}
+});
+el("studyFilter").addEventListener("change",render);
+el("linkedRun").addEventListener("change",function(){
+var r=knownRuns().find(function(x){return x.run_id===value("linkedRun");});
+if(!r)return;
+if(!value("task"))el("task").value=r.procedure||r.assumption_attacked||"";
+if(!value("settings"))el("settings").value=(r.model_or_tool||"unspecified")+" | dose="+string(r.dose_or_strength);
+});
+el("copyReceipt").addEventListener("click",async function(){
+var output=el("receipt").textContent;
+try{await navigator.clipboard.writeText(output);el("statusLine").textContent="Chipu receipt copied.";}
+catch(e){var temp=document.createElement("textarea");temp.value=output;document.body.appendChild(temp);temp.select();var okay=document.execCommand("copy");temp.remove();el("statusLine").textContent=okay?"Chipu receipt copied.":"Copy unavailable; select the receipt text manually.";}
+});
+el("exportButton").addEventListener("click",function(){
+var payload={protocol:PROTOCOL,exported_at:new Date().toISOString(),observations:observations};
+var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+var url=URL.createObjectURL(blob),a=document.createElement("a");
+a.href=url;a.download="david-lab-observations.json";a.click();URL.revokeObjectURL(url);
+});
+el("importFile").addEventListener("change",async function(e){
+var file=e.target.files&&e.target.files[0];if(!file)return;
+try{
+var data=JSON.parse(await file.text()), incoming=data.observations;
+if(data.protocol!==PROTOCOL||!Array.isArray(incoming))throw Error("Not a DAVID LAB recorder export");
+var unique=new Map(observations.map(function(x){return [x.id,x];}));
+incoming.forEach(function(r){if(r&&typeof r.id==="string"&&r.protocol===PROTOCOL&&!validRecord(r))unique.set(r.id,r);});
+observations=Array.from(unique.values());save();el("statusLine").textContent="Imported valid observations (deduplicated by ID).";
+}catch(err){el("statusLine").textContent="Import rejected: incompatible format or invalid JSON.";}
+e.target.value="";
+});
+renderRunSelect();render();
+})();
+</script>
+</body>
+</html>
